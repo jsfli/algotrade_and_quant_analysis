@@ -38,6 +38,4 @@ def ATR(DF, n):
     return df2
 
 
-data = ATR(msft, 20)
 
-data[["adjusted_close", "volume","ATR"]].plot(subplots=True, layout=(3,1))
