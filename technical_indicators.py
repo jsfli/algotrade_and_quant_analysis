@@ -37,5 +37,18 @@ def ATR(DF, n):
     df2 = df.drop(['H-L','H-PC', 'L-PC'], axis=1)
     return df2
 
+def bollinger_band(DF, rolling_days, standard_deviation_multiplier):
+    
+    """This is a function to calculate the Bollinger Band"""
+    
+    df = DF.copy()
+    df.columns = ["open", "high", "low", "close", "adjusted_close", "volume", "dividend", "split"]
+    df["MA"] = df["adjusted_close"].rolling(rolling_days).mean()
+    df["BB_upper"] = df["MA"] + standard_deviation_multiplier * df["MA"].rolling(rolling_days).std()
+    df["BB_lower"] = df["MA"] - standard_deviation_multiplier * df["MA"].rolling(rolling_days).std()
+    df["BB_width"] = df["BB_upper"] - df["BB_lower"]
+    return df
 
-
+bollinger_band(msft, 20, 2)
+    
+    
