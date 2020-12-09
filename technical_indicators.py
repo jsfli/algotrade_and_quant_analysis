@@ -2,12 +2,15 @@
 import pandas as pd
 import datetime as dt
 from alpha_vantage.timeseries import TimeSeries
+import yfinance as yf
 
 key="RZ9052SXUN5R3GJO"
 
 ts = TimeSeries(key=key, output_format="pandas")
 
-msft, meta_data = ts.get_daily_adjusted(symbol="MSFT", outputsize="compact")
+hk_0883 = yf.download(tickers = "0883.HK", start = (dt.datetime.today() - dt.timedelta(58)).strftime("%Y-%m-%d"), end = dt.datetime.today().strftime("%Y-%m-%d") , interval = '15m')
+                      
+msft, meta_data = ts.get_daily_adjusted(symbol="MSFT", outputsize="full")
 
 
 def MACD(DF, fast, slow, signal):
@@ -42,13 +45,28 @@ def bollinger_band(DF, rolling_days, standard_deviation_multiplier):
     """This is a function to calculate the Bollinger Band"""
     
     df = DF.copy()
-    df.columns = ["open", "high", "low", "close", "adjusted_close", "volume", "dividend", "split"]
-    df["MA"] = df["adjusted_close"].rolling(rolling_days).mean()
+    #df.columns = ["open", "high", "low", "close", "adjusted_close", "volume", "dividend", "split"]
+    #df = df[::-1]
+    df["MA"] = df["Adj Close"].rolling(rolling_days).mean()
     df["BB_upper"] = df["MA"] + standard_deviation_multiplier * df["MA"].rolling(rolling_days).std()
     df["BB_lower"] = df["MA"] - standard_deviation_multiplier * df["MA"].rolling(rolling_days).std()
     df["BB_width"] = df["BB_upper"] - df["BB_lower"]
+    df.dropna(inplace=True)
     return df
 
-bollinger_band(msft, 20, 2)
+msft_boll = bollinger_band(hk_0883, 20, )
+
+msft_boll.iloc[-150:, [4, 9, 10, -4]].plot()
     
-    
+
+
+
+hk_0883 = yf.download(tickers = "1928.HK", period="ytd")
+                      
+boll_0883 = bollinger_band(hk_0883, 20, 3)
+
+boll_0883[["Adj Close", "BB_upper", "BB_lower"]].plot()
+
+hk_0883_1m = yf.download(tickers = "0883.HK", period="7d", interval = "1m")
+
+hk_0883_1m[["Adj Close", "Volume"]].plot(subplots=True)
