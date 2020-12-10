@@ -61,8 +61,13 @@ msft_boll.iloc[-150:, [4, 9, 10, -4]].plot()
 
 
 
-hk_0883 = yf.download(tickers = "1928.HK", period="ytd")
-                      
+hk_1928 = yf.download(tickers = "1928.HK", period="ytd")
+test= hk_1928["Adj Close"].diff()
+u = test * 0
+d = u.copy()
+u[test>0] = test[test>0]
+d[test<0] = test[test<0]
+
 boll_0883 = bollinger_band(hk_0883, 20, 3)
 
 boll_0883[["Adj Close", "BB_upper", "BB_lower"]].plot()
