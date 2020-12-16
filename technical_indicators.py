@@ -45,8 +45,7 @@ def bollinger_band(DF, rolling_days, standard_deviation_multiplier):
     """This is a function to calculate the Bollinger Band"""
     
     df = DF.copy()
-    #df.columns 
-    = ["open", "high", "low", "close", "adjusted_close", "volume", "dividend", "split"]
+    #df.columns = ["open", "high", "low", "close", "adjusted_close", "volume", "dividend", "split"]
     #df = df[::-1]
     df["MA"] = df["Adj Close"].rolling(rolling_days).mean()
     df["BB_upper"] = df["MA"] + standard_deviation_multiplier * df["MA"].rolling(rolling_days).std()
@@ -76,4 +75,6 @@ boll_0883[["Adj Close", "BB_upper", "BB_lower"]].plot()
 
 hk_0883_1m = yf.download(tickers = "0883.HK", period="7d", interval = "1m")
 
-hk_0883_1m["Adj Close"].plot()
+hk_0883_1m.iloc[-100:,[-2]].plot()
+
+hk_0883.iloc[-100:, [-1]].plot()
